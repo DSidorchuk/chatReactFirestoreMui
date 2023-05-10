@@ -1,6 +1,6 @@
 import { Button, Container, TextField, Grid, Avatar, Box, Typography } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {serverTimestamp, collection, addDoc, orderBy, query, getFirestore} from "firebase/firestore";
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useParams } from "react-router-dom";
@@ -12,6 +12,7 @@ const Chat = () => {
     const auth = getAuth();
     const [user] = useAuthState(auth);
     const [value, setValue] = useState("");
+    const bottomRef = useRef(null);
 
     // If it is private chat, so it has ID and we use it to get messages
     const {id} = useParams();
@@ -22,6 +23,11 @@ const Chat = () => {
     const [messages] = useCollectionData(
         query(messRef, orderBy('createdAt'))
     );
+
+    useEffect(() => {
+            //  scroll to bottom every time new message added
+    bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+    }, [messages])
 
     const chatContent = messages 
         ? messages.map(message => {
@@ -35,6 +41,7 @@ const Chat = () => {
                     padding: '5px',
                     overflowWrap: "break-word"
                     }}
+                    ref={bottomRef}
                 >
                     <Grid
                         container
@@ -123,6 +130,7 @@ const Chat = () => {
                         sx={{width: '79%'}}
                         value={value}
                         onChange={e => setValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
                     />
                     <Button 
                         variant="outlined"
