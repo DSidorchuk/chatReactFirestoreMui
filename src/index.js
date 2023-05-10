@@ -1,4 +1,3 @@
-import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/App';
 import { initializeApp } from "firebase/app";
@@ -19,18 +18,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-
-
-export const Context = createContext(null);
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <Context.Provider value={{
-      app,
-      auth,
-      db
-    }}>
       <App/>
-    </Context.Provider>
 );
-

@@ -10,25 +10,25 @@ a {
 }
 
 body {
-    background-color: #A8D0E6;
+    background-color: #EEE2DC;
 }
 
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
-  }
+}
   
   /* Track */
-  ::-webkit-scrollbar-track {
-    background: #A8D0E6;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #24305E;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #374785;
-  }
+::-webkit-scrollbar-track {
+  background: #EEE2DC;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #123C69;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #374785;
+}

@@ -1,16 +1,24 @@
 import { Button, Container, TextField, Grid, Avatar, Box, Typography } from "@mui/material";
-import { Context } from "../..";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useContext, useState } from "react";
-import {serverTimestamp, collection, addDoc, orderBy, query} from "firebase/firestore";
+import { useState } from "react";
+import {serverTimestamp, collection, addDoc, orderBy, query, getFirestore} from "firebase/firestore";
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useParams } from "react-router-dom";
+import { getAuth } from 'firebase/auth';
 
 const Chat = () => {
 
-    const {auth, db} = useContext(Context);
+    const db = getFirestore();
+    const auth = getAuth();
     const [user] = useAuthState(auth);
     const [value, setValue] = useState("");
-    const messRef = collection(db, "messages");
+
+    // If it is private chat, so it has ID and we use it to get messages
+    const {id} = useParams();
+    const messRef = id 
+                        ? collection(db, 'privateChats', id, 'messages') 
+                        : collection(db, "messages");
+
     const [messages] = useCollectionData(
         query(messRef, orderBy('createdAt'))
     );
@@ -19,7 +27,7 @@ const Chat = () => {
         ? messages.map(message => {
             return (
                 <Box 
-                    key={message.uid}
+                    key={message.createdAt}
                     sx={{
                     margin: "10px", 
                     ml: user.uid === message.uid ? 'auto' : '10px',
@@ -75,8 +83,18 @@ const Chat = () => {
 
     return (
         <Container>
+            {
+                id 
+                    ? <Typography 
+                        variant="h6"
+                        sx={{textAlign: 'center', mt: '20px'}}
+                      >
+                        Chat name: {id}
+                      </Typography>
+                    : null
+            }
             <Grid 
-                sx={{heigth: window.innerHeight - 50, width: '100%', mt: '30px'}}
+                sx={{heigth: window.innerHeight - 50, width: '100%', mt: '20px'}}
                 container
                 justifyContent={'center'}
                 alignContent={'center'}
@@ -108,7 +126,7 @@ const Chat = () => {
                     />
                     <Button 
                         variant="outlined"
-                        sx={{width: '20%'}}
+                        sx={{width: '20%',  bgcolor: '#EDC7B7'}}
                         onClick={sendMessage}
                     >
                         Send
@@ -120,3 +138,4 @@ const Chat = () => {
 };
 
 export default Chat;
+

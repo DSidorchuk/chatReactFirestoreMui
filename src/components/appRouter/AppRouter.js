@@ -3,9 +3,8 @@ import { getAuth } from 'firebase/auth';
 import {useAuthState} from 'react-firebase-hooks/auth';
 import Login from '../login/Login';
 import Chat from '../chat/Chat';
-import PrivateChat from '../privateChat/PrivateChat';
-import NotLoggedInUser from '../notLoggedInUser/NotLoggedInUser';
-import LoggedInUser from '../loggedInUser/LoggedInUser';
+import NotLoggedUser from '../notLoggedUser/NotLoggedUser';
+import LoggedUserMenu from '../loggedUserMenu/LoggedUserMenu';
 
 const AppRouter = () => {
 
@@ -14,10 +13,10 @@ const AppRouter = () => {
 
     return (
             <Routes>
-                <Route path="/" element={user ? <LoggedInUser/> : <NotLoggedInUser/>}/>
+                <Route path="/" element={user ? <LoggedUserMenu/> : <NotLoggedUser/>}/>
                 <Route path='/login' element={<Login/>}/>
                 <Route path='/chat' element={<Chat/>}/>
-                <Route path='/privateChat/:id' element={<PrivateChat/>}/>
+                <Route path='/privateChat/:id' element={<Chat/>}/>
             </Routes>
     )
 }

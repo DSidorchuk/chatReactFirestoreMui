@@ -1,42 +1,49 @@
 import { NavLink} from 'react-router-dom';
-import { Grid, Button, Typography, TextField } from "@mui/material";
+import { Grid, Button, Typography } from "@mui/material";
 import { setDoc, getFirestore, doc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import PrivateChatSearch from './PrivateChatSearch';
+import ChatInput from '../chatInput/ChatInput';
 
-const LoggedInUser = () => {
+const LoggedUserMenu = () => {
 
     const db = getFirestore();
     const goToNewChat = useNavigate();
 
-
-    const createChat = async (name, setWarning) => {  
-
+    const validateChatName = (name, warningFunc) => {
         const workChatName = name.replaceAll(' ', '')
         const regexp = /\W/i;
 
         if (!regexp.test(workChatName)) {
+            return workChatName;
+        } else {
+            warningFunc('Please use in name letters a-z, digits 0-9');
+            return false;
+        }
+
+    }
+
+    const createChat = async (name, setWarning) => {  
+
+        const workChatName = validateChatName(name, setWarning);
+
+        if (workChatName) {
             const chatRef  = doc(db, 'privateChats', workChatName);
             const docSnap = await getDoc(chatRef);
+
             if (docSnap.exists()) {
                 setWarning('Please choose another name')
             } else {
                 await setDoc(chatRef, {createdAt: serverTimestamp()});
                 goToNewChat(`/privateChat/${workChatName}`)
             }
-        } else {
-            setWarning('Please use in name letters a-z, digits 0-9');
-        }
-
+        } 
     }
 
     const checkChatName = async (name, setWarning) => {
 
-        const workChatName = name.replaceAll(' ', '')
-        const regexp = /\W/i;
+        const workChatName = validateChatName(name);
 
-        if (!regexp.test(workChatName)) {
+        if (workChatName) {
             const chatRef  = doc(db, 'privateChats', workChatName);
             const docSnap = await getDoc(chatRef);
             if (docSnap.exists()) {
@@ -44,9 +51,7 @@ const LoggedInUser = () => {
             } else {
                 setWarning('There isn`t chat with such name');
             }
-        } else {
-            setWarning('Please use in name letters a-z, digits 0-9');
-        }
+        } 
     }
 
     return (
@@ -62,21 +67,30 @@ const LoggedInUser = () => {
         >
             <Typography
                 variant='h5'
-                sx={{mb: '30px', textTransform: "uppercase"}}
+                sx={{mb: '30px', textTransform: "uppercase", color: '#123C69'}}
             >
                 At this app you can
             </Typography>
             <NavLink to='/chat'>
-                <Button variant='outlined'>
+                <Button 
+                    variant='outlined'
+                    sx={{width: '323px'}}
+                >
                     enter chat
                 </Button>
             </NavLink>
-            <Typography>or</Typography>
-            <PrivateChatSearch btnName='create chat' btnFunction={createChat}/>
-            <Typography>or</Typography>
-            <PrivateChatSearch btnName='search chat' btnFunction={checkChatName}/>
+            <Typography sx={{color: '#AC3B61'}}>or</Typography>
+            <ChatInput 
+                btnName='create chat' 
+                btnFunction={createChat}
+            />
+            <Typography sx={{color: '#AC3B61'}}>or</Typography>
+            <ChatInput 
+                btnName='search chat' 
+                btnFunction={checkChatName}
+            />
         </Grid>
     )
 }
 
-export default LoggedInUser;
+export default LoggedUserMenu;

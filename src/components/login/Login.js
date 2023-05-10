@@ -1,12 +1,11 @@
 import { Grid, Box, Button } from "@mui/material";
-import { useContext } from "react";
-import { Context } from "../..";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { getAuth } from 'firebase/auth';
 
 const Login = () => {
 
-    const {auth} = useContext(Context);
+    const auth = getAuth();
     const navigateToMain = useNavigate();
 
     const login = () => {
@@ -14,13 +13,8 @@ const Login = () => {
         signInWithPopup(auth, provider)
         .then((result) => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            const user = result.user;
             navigateToMain('/');
           }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            const email = error.customData.email;
             const credential = GoogleAuthProvider.credentialFromError(error);
           });
     }

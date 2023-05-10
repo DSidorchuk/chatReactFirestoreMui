@@ -16,12 +16,15 @@ const NotLoggedInUser = () => {
             <Typography 
                 variant="h6" 
                 component="div"
-                sx={{textAlign: 'center'}} 
+                sx={{textAlign: 'center', color: '#123C69'}} 
             >
                 For chat, please, follow next link and log in:
             </Typography>
             <NavLink to='/login'>
-                <Button variant='contained'>
+                <Button 
+                    variant='contained'
+                    sx={{color: '#EEE2DC'}}
+                >
                     Go to log in
                 </Button>
             </NavLink>
